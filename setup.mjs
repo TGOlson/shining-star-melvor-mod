@@ -25,12 +25,21 @@ const getModifierState = (constellation, type, index) => {
   const astrology = getAstrology();
   const isUnlocked = astrology.isModifierUnlocked(constellation, type, index);
   const isBought = astrology.isModifierBought(constellation, type, index);
-  const count = constellation.uniqueModsBought[index];
+
+  const count = type === AstrologyModifierType.Standard
+    ? constellation.standardModsBoguht[index]
+    : constellation.uniqueModsBought[index];
+
+  const targetCount = type === AstrologyModifierType.Standard
+    ? MAX_STANDARD_COUNT
+    : MAX_UNIQUE_COUNT;
 
   if (!isUnlocked) return modifierState.LOCKED;
   if (!isBought) return modifierState.NOT_STARTED;
-  if (count < MAX_STANDARD_COUNT) return modifierState.IN_PROGRESS;
-  if (count === MAX_STANDARD_COUNT) return modifierState.COMPLETE;
+  if (count < targetCount) return modifierState.IN_PROGRESS;
+  if (count === targetCount) return modifierState.COMPLETE;
+
+  debug('Error computing state for constellation', constellation);
 
   return modifierState.UNEXPECTED_STATE;
 }
