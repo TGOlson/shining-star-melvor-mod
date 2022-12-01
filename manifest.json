@@ -1,7 +1,7 @@
 {
   "namespace": "shiningstar",
-  "version": "0.0.1-17",
-  "icon": "assets/stars.png",
+  "version": "0.1.0",
+  "icon": "assets/icon.png",
   "setup": "setup.mjs",
   "load": ["templates.html"]
 }
