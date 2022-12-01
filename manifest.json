@@ -2,5 +2,7 @@
   "namespace": "shiningstar",
   "setup": "setup.mjs",
   "load": "templates.html",
-  "version": "0.0.1-6"
+  "version": "0.0.1-12",
+  "icon": "assets/icon.png",
+  "load": ["assets/fontawesome.min.css"]
 }

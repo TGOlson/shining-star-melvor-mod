@@ -2,8 +2,12 @@
   <div class="font-size-base font-w600 text-center text-muted">
     <small class="mb-2" style="display: block;" >
       <p style="margin-bottom: 0;">Modifiers</p>
-      <span>Standard: {{standard.join(' ')}}</span>
-      <span>Unique: {{unique.join(' ')}}</span>
+      <i class="fa-solid fa-star"></i>
+      <p style="margin-bottom: 0;">
+        <span>Standard:<span>
+        <span v-for="modifier in standardModifiers">{{modifier}}</span>
+      </p>
+      <p style="margin-bottom: 0;">Unique: {{uniqueModifiers.join(' ')}}</p>
     </small>
   </div>
 </template>

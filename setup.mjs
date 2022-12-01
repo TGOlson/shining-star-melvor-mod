@@ -27,7 +27,7 @@ const getModifierState = (constellation, type, index) => {
   const isBought = astrology.isModifierBought(constellation, type, index);
 
   const count = type === AstrologyModifierType.Standard
-    ? constellation.standardModsBoguht[index]
+    ? constellation.standardModsBought[index]
     : constellation.uniqueModsBought[index];
 
   const targetCount = type === AstrologyModifierType.Standard
@@ -54,27 +54,38 @@ const getUniquedModifierState = (constellation) =>
     getModifierState(constellation, AstrologyModifierType.Unique, i)
   );
 
-const ModifierState = (constellation) => {
-  const standard = getStandardModifierState(constellation);
-  const unique = getUniquedModifierState(constellation);
+const ModifierState = ({constellation, container}) => {
+  const standardModifiers = getStandardModifierState(constellation);
+  const uniqueModifiers = getUniquedModifierState(constellation);
+
+  const isStandardComplete = standardModifiers.every(x => x === modifierState.COMPLETE);
+  const isUniqueComplete = uniqueModifiers.every(x => x === modifierState.COMPLETE);
+
+  if (isStandardComplete && isUniqueComplete) {
+    const div = container.querySelector('div')
+    div.style.setProperty('background-color', '#5a380cc2', '!important') // fallback if image is broken
+    div.style.setProperty('background-image', 'url(https://img.freepik.com/free-vector/sparkling-golden-stars-confetti-burst-background_1017-32368.jpg)', 'important')
+    div.style.setProperty('background-size', 'auto 100px', 'important')
+    div.style.setProperty('background-blend-mode', 'lighten', 'important')
+  }
 
   return {
     $template: '#shining-star-container',
     constellation,
-    standard,
-    unique,
+    standardModifiers,
+    uniqueModifiers,
     updateStates() {
-      this.standard = getStandardModifierState(constellation);
-      this.unique = getUniquedModifierState(constellation);
+      this.standardModifiers = getStandardModifierState(constellation);
+      this.uniqueModifiers = getUniquedModifierState(constellation);
     }
   }
 }
 
-const addModifierStatesToAstrology = () => {
+const createModifierStates = () => {
   const {constellations} = getAstrologyMenu();
 
   return Array.from(constellations).map(([constellation, container]) => {
-    const modifierState = ModifierState(constellation)
+    const modifierState = ModifierState({constellation, container})
     const parent = container.progressBar.barElem.parentElement.parentElement;
 
     ui.create(modifierState, parent);
@@ -84,13 +95,16 @@ const addModifierStatesToAstrology = () => {
 
 }
 
-export function setup({ onInterfaceReady }) {
+export function setup({ onInterfaceReady, getResourceUrl }) {
   debug('Loaded')
   onInterfaceReady(({ patch }) => {
     debug('Setting up initial states')
-    const modifierStates = addModifierStatesToAstrology();
+    const modifierStates = createModifierStates();
 
     debug('Initial modifier states', modifierStates);
+
+    const url = getResourceUrl('assets/stars.jpg');
+    window.STARS_URL = url;
 
     patch(Astrology, 'render').before(() => {
       if (isAstroPageOpen()) {
@@ -99,3 +113,20 @@ export function setup({ onInterfaceReady }) {
     })
   })
 }
+
+
+// tooltips... for later
+// generateTooltips(result, now, flags = {
+//     noSkill: false,
+//     noMastery: false,
+//     noPool: false
+// }) {
+//     if (this.element._tippy === undefined) {
+//         tippy(this.element, {
+//             allowHTML: true,
+//             interactive: false,
+//             animation: false,
+//         });
+//     }
+//     this.element._tippy.setContent(`<div>${this.tooltipContent(result, now)}</div>`);
+// }
