@@ -42,7 +42,7 @@ const getStandardModifierState = (constellation) =>
 
 const getUniquedModifierState = (constellation) =>
   constellation.uniqueModifiers.map((m, i) =>
-    getModifierState(constellation, AstrologyModifierType.Standard, i)
+    getModifierState(constellation, AstrologyModifierType.Unique, i)
   );
 
 const ModifierState = (constellation) => {
