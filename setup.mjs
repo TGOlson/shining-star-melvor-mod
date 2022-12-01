@@ -1,5 +1,5 @@
 // constants
-const DEBUG = true;
+const DEBUG = false;
 
 const ASTROLOGY_ID = 'melvorD:Astrology'
 const MAX_STANDARD_COUNT = 8;
@@ -111,20 +111,3 @@ export function setup({ onInterfaceReady, getResourceUrl }) {
     })
   })
 }
-
-
-// tooltips... for later
-// generateTooltips(result, now, flags = {
-//     noSkill: false,
-//     noMastery: false,
-//     noPool: false
-// }) {
-//     if (this.element._tippy === undefined) {
-//         tippy(this.element, {
-//             allowHTML: true,
-//             interactive: false,
-//             animation: false,
-//         });
-//     }
-//     this.element._tippy.setContent(`<div>${this.tooltipContent(result, now)}</div>`);
-// }
