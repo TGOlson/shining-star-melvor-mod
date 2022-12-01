@@ -54,7 +54,7 @@ const getUniquedModifierState = (constellation) =>
     getModifierState(constellation, AstrologyModifierType.Unique, i)
   );
 
-const ModifierState = ({constellation, container}) => {
+const ModifierState = ({constellation, container, starsUrl}) => {
   const standardModifiers = getStandardModifierState(constellation);
   const uniqueModifiers = getUniquedModifierState(constellation);
 
@@ -64,8 +64,8 @@ const ModifierState = ({constellation, container}) => {
   if (isStandardComplete && isUniqueComplete) {
     const div = container.querySelector('div')
     div.style.setProperty('background-color', '#5a380cc2', '!important') // fallback if image is broken
-    div.style.setProperty('background-image', 'url(https://img.freepik.com/free-vector/sparkling-golden-stars-confetti-burst-background_1017-32368.jpg)', 'important')
-    div.style.setProperty('background-size', 'auto 100px', 'important')
+    div.style.setProperty('background-image', `url(${starsUrl})`, 'important')
+    div.style.setProperty('background-size', 'contain', 'important')
     div.style.setProperty('background-blend-mode', 'lighten', 'important')
   }
 
@@ -81,11 +81,11 @@ const ModifierState = ({constellation, container}) => {
   }
 }
 
-const createModifierStates = () => {
+const createModifierStates = (starsUrl) => {
   const {constellations} = getAstrologyMenu();
 
   return Array.from(constellations).map(([constellation, container]) => {
-    const modifierState = ModifierState({constellation, container})
+    const modifierState = ModifierState({constellation, container, starsUrl})
     const parent = container.progressBar.barElem.parentElement.parentElement;
 
     ui.create(modifierState, parent);
@@ -99,12 +99,10 @@ export function setup({ onInterfaceReady, getResourceUrl }) {
   debug('Loaded')
   onInterfaceReady(({ patch }) => {
     debug('Setting up initial states')
-    const modifierStates = createModifierStates();
+    const starsUrl = getResourceUrl('assets/stars.png');
 
+    const modifierStates = createModifierStates(starsUrl);
     debug('Initial modifier states', modifierStates);
-
-    const url = getResourceUrl('assets/stars.jpg');
-    window.STARS_URL = url;
 
     patch(Astrology, 'render').before(() => {
       if (isAstroPageOpen()) {
