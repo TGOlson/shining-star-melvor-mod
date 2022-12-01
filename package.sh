@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-zip dist/shining-star-v0.0.zip manifest.json setup.mjs templates.html
+VERSION=$(cat manifest.json | jq -r .version)
+
+zip dist/shining-star-v$VERSION.zip manifest.json setup.mjs templates.html

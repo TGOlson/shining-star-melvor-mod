@@ -1,4 +1,6 @@
 // constants
+const DEBUG = true;
+
 const ASTROLOGY_ID = 'melvorD:Astrology'
 const MAX_STANDARD_COUNT = 8;
 const MAX_UNIQUE_COUNT = 5;
@@ -15,6 +17,8 @@ const modifierState = {
 const getAstrologyMenu = () => astrologyMenus;
 const getAstrology = () => game.astrology;
 const isAstroPageOpen = () => game.openPage.id === ASTROLOGY_ID
+
+const debug = (...xs) => DEBUG ? console.log('Shining Star:', ...xs) : null;
 
 // core logic
 const getModifierState = (constellation, type, index) => {
@@ -72,13 +76,15 @@ const addModifierStatesToAstrology = () => {
 }
 
 export function setup({ onInterfaceReady }) {
+  debug('Loaded')
   onInterfaceReady(({ patch }) => {
+    debug('Setting up initial states')
     const modifierStates = addModifierStatesToAstrology();
+
+    debug('Initial modifier states', modifierStates);
 
     patch(Astrology, 'render').before(() => {
       if (isAstroPageOpen()) {
-        console.log('Debug: updating Astrology page');
-
         modifierStates.forEach(m => m.updateStates());
       }
     })
