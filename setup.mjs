@@ -81,6 +81,6 @@ export function setup({ onInterfaceReady }) {
 
         modifierStates.forEach(m => m.updateStates());
       }
-    }
+    })
   })
 }

@@ -1,4 +1,6 @@
 {
+  "namespace": "shining-star",
   "setup": "setup.mjs",
-  "load": "templates.html"
+  "load": "templates.html",
+  "version": "0.0.1-2"
 }
