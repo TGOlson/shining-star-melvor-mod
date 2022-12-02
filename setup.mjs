@@ -55,19 +55,27 @@ const getUniquedModifierState = (constellation) =>
   );
 
 const ModifierState = ({constellation, container, starsUrl}) => {
-  const standardModifiers = getStandardModifierState(constellation);
-  const uniqueModifiers = getUniquedModifierState(constellation);
+  const getModifierStates = (con) => {
+    const standardModifiers = getStandardModifierState(con);
+    const uniqueModifiers = getUniquedModifierState(con);
 
-  const isStandardComplete = standardModifiers.every(x => x === modifierState.COMPLETE);
-  const isUniqueComplete = uniqueModifiers.every(x => x === modifierState.COMPLETE);
+    const isStandardComplete = standardModifiers.every(x => x === modifierState.COMPLETE);
+    const isUniqueComplete = uniqueModifiers.every(x => x === modifierState.COMPLETE);
 
-  if (isStandardComplete && isUniqueComplete) {
-    const div = container.querySelector('div')
-    div.style.setProperty('background-color', '#5a380cc2', '!important') // fallback if image is broken
-    div.style.setProperty('background-image', `url(${starsUrl})`, 'important')
-    div.style.setProperty('background-size', 'contain', 'important')
-    div.style.setProperty('background-blend-mode', 'lighten', 'important')
+    // This mutates the dom, but is in a "get" function, should be refactored out elsewhere...
+    if (isStandardComplete && isUniqueComplete) {
+      const div = container.image.parentElement
+      div.style.setProperty('background-image', `url(${starsUrl})`, 'important')
+      div.style.setProperty('background-size', 'contain', 'important')
+      div.style.setProperty('background-repeat', 'no-repeat', 'important')
+      div.style.setProperty('background-position', 'center', 'important')
+      div.style.setProperty('background-position-y', '-1px', 'important')
+    }
+
+    return {standardModifiers, uniqueModifiers};
   }
+
+  const {standardModifiers, uniqueModifiers} = getModifierStates(constellation);
 
   return {
     $template: '#shining-star-container',
@@ -75,8 +83,10 @@ const ModifierState = ({constellation, container, starsUrl}) => {
     standardModifiers,
     uniqueModifiers,
     updateStates() {
-      this.standardModifiers = getStandardModifierState(constellation);
-      this.uniqueModifiers = getUniquedModifierState(constellation);
+      const {standardModifiers, uniqueModifiers} = getModifierStates(constellation);
+
+      this.standardModifiers = standardModifiers;
+      this.uniqueModifiers = uniqueModifiers;
     }
   }
 }
@@ -99,7 +109,7 @@ export function setup({ onInterfaceReady, getResourceUrl }) {
   debug('Loaded')
   onInterfaceReady(({ patch }) => {
     debug('Setting up initial states')
-    const starsUrl = getResourceUrl('assets/stars.png');
+    const starsUrl = getResourceUrl('assets/stars_transparent.png');
 
     const modifierStates = createModifierStates(starsUrl);
     debug('Initial modifier states', modifierStates);
